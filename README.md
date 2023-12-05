@@ -7,10 +7,16 @@ Then  I made the classical mistake that the image data was not in the right orde
 Following, I optimized used MSE loss, which was a terrible idea but took a few minutes (optimizing on my own GPU, maybe a mistake). The results were disappointing, and so panic happened. 
 
 Following, I remembered that cross entropy (KL divergence) encodes distance (I know KL is not symmetric) between distributions, so maybe that would be better. Indeed with that I got results that looks like this:
+
+
 ![Screenshot from 2023-12-05 18-38-37](https://github.com/szat/PhotoroomAssignment/assets/5555551/37948acd-71ac-4d4b-8bd9-d152325994e5)
 
+
 And then after normalizing them, they look like this:
+
+
 ![Screenshot from 2023-12-05 18-52-23](https://github.com/szat/PhotoroomAssignment/assets/5555551/cbda79d4-6f4e-48af-9460-784eae9731ad)
+
 
 Which makes me think it was the right path. Following would be to use contours from opencv to detect circles, and then the centers are the keypoints (so that is deterministic). 
 
