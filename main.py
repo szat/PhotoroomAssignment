@@ -2,6 +2,8 @@ import torch
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import cv2
+from torch.utils.data import Dataset, DataLoader, random_split
 
 # Make sure I have access to my gpu
 cuda_available = torch.cuda.is_available()
@@ -67,7 +69,6 @@ for i in range(len(label_images)):
     idx_x = labels_x_int[i]
     label_images[i, idx_y, idx_x] = 1
 
-import cv2
 # tmp = label_images[0]
 # kernel = np.ones((3, 3))
 # dilated = cv2.dilate(tmp, kernel, iterations=1)
@@ -110,7 +111,8 @@ print(normalized_images.shape)
 # for i in range(len(normalized_images2)):
 #     normalized_images2[i] = scipy.ndimage.zoom(normalized_images[i], zoom_f, order=3)
 
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, random_split
+
 class FaceDataset(Dataset):
     def __init__(self, images_np, labels_np):
         self.data = images_np
@@ -124,7 +126,6 @@ class FaceDataset(Dataset):
         label = torch.from_numpy(self.label[idx]).float()
         return image, label
 
-from torch.utils.data import DataLoader, random_split
 dataset = FaceDataset(normalized_images, label_images)
 
 train_size = int(0.8 * len(dataset))
@@ -255,3 +256,36 @@ plt.show()
 
 # Hmm interesting discussion here:
 # https://datascience.stackexchange.com/questions/51048/mse-vs-cross-entropy-for-training-with-facial-landmark-pose-heatmaps
+
+# Ok this was definitely the right way to go, I dont have much more time to train want to try to finish the actual
+# Keypoint extraction, for which I'll try to use open-cv.
+# To be done better:
+# - data augmentation, flips, rotation, affine transforms (to simulate 3d pose changes)
+# - augment the number of layers: bias - var tradeoff actually does not seem to depend on the nb of parameters:
+# https://arxiv.org/abs/1810.08591
+# - maybe do not dilate or blurr the blobs, it seems that the heatmaps act too much like heatmaps and fuse together.
+# - train longer
+
+# Other thoughts: recall is which keypoints were detected like actual kpts (blobs), accuracy will tbe center of a blob
+# Maybe compare different models using F1 score, since both metrics seem important here (especially if we have faces
+# where you can see only part of a face, i.e. the general case, there we dont want the model to be forced to find 15,
+# so there recall seems more important).
+
+# So in case we have occlusions: prioritize recall, if it is always the full face, prioritize precision.
+
+# Lets try to find the blobs:
+# Lets just go with this: https://stackoverflow.com/questions/74771948/how-to-localize-red-regions-in-heatmap-using-opencv
+
+print(test_output_np.max())
+# Normalize again the output like we did for the input
+test_output_np /= test_output_np.max()
+
+mean = test_output_np.mean()
+std = test_output_np.std()
+test_output_np_new = (test_output_np - mean) / std
+
+mask = test_output_np_new > 2  # lets pick 2 standard dev
+
+# Then find contours and then find the center of the contours which will give deterministically the location of the keypoint.
+
+# Running out of time here. Thanks for taking the pain of reading up to here.
