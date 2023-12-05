@@ -1,22 +1,60 @@
 import torch
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
-# Check if CUDA (GPU support) is available in PyTorch
-cuda_available = torch.cuda.is_available()
+df_train = pd.read_csv('training.csv')
+print(f"DataFrame Shape {df_train.shape}")
+df_train.head(2)
 
-# Print whether CUDA is available or not
-print("CUDA (GPU support) is available in PyTorch:", cuda_available)
+feature_col = 'Image'
+target_cols = list(df_train.drop('Image', axis=1).columns)
 
-# If CUDA is available, print out the name of the GPU
-if cuda_available:
-    gpu_name = torch.cuda.get_device_name(torch.cuda.current_device())
-    print("GPU Name:", gpu_name)
+# Fill missing values
+df_train[target_cols] = df_train[target_cols].fillna(df_train[target_cols].mean())
 
-import cv2
+# Image characteristics
+IMG_WIDTH = 96
+IMG_HEIGHT = 96
+IMG_CHANNELS = 1
 
-# Test to see if OpenCV is working properly
+raw_images = np.array(df_train[feature_col].str.split().tolist(), dtype='float')
+images = raw_images.reshape(-1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS)
 
-# Attempt to load a version information from OpenCV to see if it's working
-opencv_version = cv2.__version__
+labels = df_train[target_cols].values
 
-# Print the version to confirm it's working
-print("OpenCV is working. Version:", opencv_version)
+def show_examples(images, landmarks):
+    fig, axes = plt.subplots(nrows=4, ncols=4, figsize=(16, 16))
+
+    for img, marks, ax in zip(images, landmarks, axes.ravel()):
+        # Keypoints
+        x_points = marks[:: 2]
+        y_points = marks[1::2]
+
+        ax.imshow(img.squeeze(), cmap='gray')
+        ax.scatter(x_points, y_points, s=10, color='red')
+
+    plt.show()
+
+idx = np.random.choice(16, 16)
+show_examples(images[idx], labels[idx])
+
+# Prepare the data
+normalized_images = images.astype(np.float32) / 255.0
+for i in range(normalized_images.shape[0]):
+    img = normalized_images[i]
+    mean = img.mean()
+    std = img.std()
+    img_new = (img - mean) / std
+    normalized_images[i] = img_new
+
+label_images = np.zeros_like(normalized_images)
+labels_x = labels[:, 0::2]
+labels_y = labels[:, 1::2]
+labels_x_int = labels_x.astype(int)
+labels_y_int = labels_y.astype(int)
+
+# Sanity check
+tmp = normalized_images[0]
+tmp[labels_y_int[0], labels_x_int[0]] = 1
+# Ok this looks fine
