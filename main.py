@@ -67,11 +67,22 @@ for i in range(len(label_images)):
     idx_x = labels_x_int[i]
     label_images[i, idx_y, idx_x] = 1
 
-# Sanity check
-# tmp = normalized_images[10]
-# tmp2 = label_images[10]
-# tmp[tmp2 == 1] = 1
-# Ok this looks fine
+import cv2
+# tmp = label_images[0]
+# kernel = np.ones((3, 3))
+# dilated = cv2.dilate(tmp, kernel, iterations=1)
+# blurred = cv2.GaussianBlur(dilated, (3, 3), 0)
+
+kernel = np.ones((3, 3))
+for i in range(len(label_images)):
+    tmp = label_images[i]
+    dilated = cv2.dilate(tmp, kernel, iterations=1)
+    blurred = cv2.GaussianBlur(dilated, (3, 3), 0)
+    label_images[i] = blurred[:, :, None]
+
+plt.imshow(label_images[0], cmap='gray')  # Use cmap='gray' for grayscale images
+plt.axis('off')
+plt.show()
 
 # dims are not right, torch likes (N, C, H, W) = (N, 1, H, W)
 # no patience to do it elegantly now
@@ -191,14 +202,15 @@ class UNet(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         images, labels = batch
         outputs = self(images)
-        loss = F.mse_loss(outputs, labels)
+        loss = F.binary_cross_entropy_with_logits(outputs, labels)
+        self.log('train_loss', loss)
         return loss
 
     def validation_step(self, batch, batch_idx):
         images, labels = batch
         outputs = self(images)
-        loss = F.mse_loss(outputs, labels)
-        self.log('val_loss', loss)  # Logging the validation loss
+        loss = F.binary_cross_entropy_with_logits(outputs, labels)
+        self.log('val_loss', loss)
         return loss
 
     def configure_optimizers(self):
@@ -213,7 +225,7 @@ class UNet(pl.LightningModule):
 unet_model = UNet()
 trainer = pl.Trainer(max_steps=3000, max_epochs=10)
 
-torch.set_float32_matmul_precision('high')
+torch.set_float32_matmul_precision('medium')
 # train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 # val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 trainer.fit(unet_model, train_loader, val_loader)
