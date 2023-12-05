@@ -22,14 +22,14 @@ Which makes me think it was the right path. Following would be to use contours f
 
 # Libraries used:
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import cv2
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import pytorch_lightning as pl
-from torch.utils.data import Dataset, DataLoader, random_split
+- import numpy as np
+- import pandas as pd
+- import matplotlib.pyplot as plt
+- import cv2
+- import torch
+- import torch.nn as nn
+- import torch.nn.functional as F
+- import pytorch_lightning as pl
+- from torch.utils.data import Dataset, DataLoader, random_split
 
 I apologize, there is a requirements.txt but I made the mistake of adding open3d just in case, before I started the assignement and it made the list really explode. 
