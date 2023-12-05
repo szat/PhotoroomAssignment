@@ -154,8 +154,10 @@ class UNetBlock(nn.Module):
         return self.block(x)
 
 class UNet(pl.LightningModule):
-    def __init__(self):
+    def __init__(self, error_threshold=0.0005):
         super(UNet, self).__init__()
+        self.error_threshold = error_threshold
+
         self.down1 = UNetBlock(1, 64)
         self.down2 = UNetBlock(64, 128)
         self.down3 = UNetBlock(128, 256)
@@ -192,14 +194,52 @@ class UNet(pl.LightningModule):
         loss = F.mse_loss(outputs, labels)
         return loss
 
+    def validation_step(self, batch, batch_idx):
+        images, labels = batch
+        outputs = self(images)
+        loss = F.mse_loss(outputs, labels)
+        self.log('val_loss', loss)  # Logging the validation loss
+        return loss
+
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=1e-3)
 
-unet_model = UNet()
-trainer = pl.Trainer(max_steps=1000, max_epochs=10)
+    def on_validation_end(self):
+        val_loss = self.trainer.callback_metrics.get('val_loss')
+        if val_loss is not None and val_loss < self.error_threshold:
+            print(f"stop training, val loss = {val_loss:.4f}, thresh = {self.error_threshold:.4f}")
+            self.trainer.should_stop = True
 
-torch.set_float32_matmul_precision('medium')
+unet_model = UNet()
+trainer = pl.Trainer(max_steps=3000, max_epochs=10)
+
+torch.set_float32_matmul_precision('high')
 # train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 # val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 trainer.fit(unet_model, train_loader, val_loader)
 
+trainer.validate(unet_model, val_loader)
+
+# Lets look at output if it makes sense
+# Set model to eval mode, disable gradients
+unet_model.eval()
+val_data_iter = iter(val_dataset)
+test_img, test_label = next(val_data_iter)
+test_img = test_img[None, :, :, :]
+
+# The reason I do this is cause on my pycharn I can just inspect np images directly
+test_img_np = np.squeeze(np.array(test_img))
+test_label_np = np.squeeze(np.array(test_label))
+
+with torch.no_grad():
+    output = unet_model(test_img)
+
+test_output_np = np.squeeze(np.array(output))
+plt.imshow(test_output_np, cmap='gray')  # Use cmap='gray' for grayscale images
+plt.axis('off')
+plt.show()
+
+# Ok this is def not good at all, it is a weird heatmap, but not want we want.
+
+# Hmm interesting discussion here:
+# https://datascience.stackexchange.com/questions/51048/mse-vs-cross-entropy-for-training-with-facial-landmark-pose-heatmaps
