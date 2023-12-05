@@ -1,8 +1,11 @@
-import torch
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import cv2
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import pytorch_lightning as pl
 from torch.utils.data import Dataset, DataLoader, random_split
 
 # Make sure I have access to my gpu
@@ -111,8 +114,6 @@ print(normalized_images.shape)
 # for i in range(len(normalized_images2)):
 #     normalized_images2[i] = scipy.ndimage.zoom(normalized_images[i], zoom_f, order=3)
 
-from torch.utils.data import Dataset, DataLoader, random_split
-
 class FaceDataset(Dataset):
     def __init__(self, images_np, labels_np):
         self.data = images_np
@@ -142,11 +143,6 @@ val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 # I know this is in tf not in torch
 # https://github.com/zhixuhao/unet
 # https://github.com/fel-thomas/simple_unet/tree/master
-
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import pytorch_lightning as pl
 
 pl.seed_everything(12)
 
