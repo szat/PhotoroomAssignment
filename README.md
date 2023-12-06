@@ -13,7 +13,6 @@ Afterward, I remembered that cross-entropy (KL divergence) measures the distance
  width="300" height="300" />
   <img src="https://github.com/szat/PhotoroomAssignment/assets/5555551/cbda79d4-6f4e-48af-9460-784eae9731ad"
  width="300" height="300" />
- />
 
 Which makes me think it was the right path. Following would be to use contours from opencv to detect circles, and then the centers are the keypoints (so that is deterministic). 
 
