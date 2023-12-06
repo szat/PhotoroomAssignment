@@ -69,6 +69,25 @@ labels_x = labels[:, 0::2]
 labels_y = labels[:, 1::2]
 # This is not very nice, but idk how to fix it atm, maybe with some heat map diffusion around subpixel center
 # Unsure weather we should have points added 0.5 or not...
+
+# Check whether it should be adjusted by 0.5 or not:
+def show_examples_adjusted(images, landmarks, adjust=False):
+    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(16, 16))
+    for img, marks, ax in zip(images, landmarks, axes.ravel()):
+        # Keypoints
+        x_points = marks[:: 2]
+        y_points = marks[1::2]
+        if adjust:
+            x_points += 0.5
+            y_points += 0.5
+        ax.imshow(img.squeeze(), cmap='gray')
+        ax.scatter(x_points, y_points, s=2,marker='x',color='red')
+    plt.show()
+
+# idx = np.random.choice(16, 16)
+# show_examples_adjusted(images[idx], labels[idx], False)
+# Upon visual inspection, we should not correct with 0.5
+
 labels_x_int = (4*labels_x).astype(int)
 labels_y_int = (4*labels_y).astype(int)
 
