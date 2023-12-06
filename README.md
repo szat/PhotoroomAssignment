@@ -6,7 +6,14 @@ Then, I made the classic mistake of having the image data in the wrong format fo
 
 Subsequently, I used MSE loss for optimization, which turned out to be a terrible idea, even though it only took a few minutes (optimizing on my own GPU may have been a mistake). The results were disappointing, leading to a bit of panic.
 
-Afterward, I remembered that cross-entropy (KL divergence) measures the distance (I'm aware that KL is not symmetric) between distributions, so I thought that might be a better approach. Indeed, using that, I achieved results that look like this:
+Afterward, I remembered that cross-entropy (KL divergence) measures the distance (I'm aware that KL is not symmetric) between distributions, so I thought that might be a better approach. On the left is the output, on the right after I normalize them. 
+
+<p>
+  <img src="https://github.com/szat/PhotoroomAssignment/assets/5555551/37948acd-71ac-4d4b-8bd9-d152325994e5"
+ width="300" height="300" />
+  <img src="https://github.com/szat/PhotoroomAssignment/assets/5555551/cbda79d4-6f4e-48af-9460-784eae9731ad"
+ width="300" height="300" />
+ />
 
 ![Screenshot from 2023-12-05 18-38-37](https://github.com/szat/PhotoroomAssignment/assets/5555551/37948acd-71ac-4d4b-8bd9-d152325994e5)
 
