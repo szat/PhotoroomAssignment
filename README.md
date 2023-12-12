@@ -33,3 +33,7 @@ I apologize, there is a requirements.txt but I made the mistake of adding open3d
 # Notes (after deadline):
 - Two things that are really missing from my code is first data augmentation, then validation, and related to that the fact that my keypoint output is not ordered, so I need to find a solution for that. 
 - I am playing with the problem for myself in the file after_time_limit.py, no need to look at it :)
+- Visual inspection of the case of 3 distant keypoints encoded into the same channel and separated via mixture of gaussians. 
+
+![3pts_2eyes_1mouth](https://github.com/szat/PhotoroomAssignment/assets/5555551/dfba58a8-3bc6-45e0-9f17-4616dbeea36c)
+
