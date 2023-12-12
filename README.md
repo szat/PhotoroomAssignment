@@ -27,8 +27,9 @@ Which makes me think it was the right path. Following would be to use contours f
 - import torch.nn.functional as F
 - import pytorch_lightning as pl
 - from torch.utils.data import Dataset, DataLoader, random_split
+- import sklearn
 
-I apologize, there is a requirements.txt but I made the mistake of adding open3d just in case, before I started the assignement and it made the list really explode. Now I corrected that after the end of the assignment, I hope you don't mind since it has not much to do with the thought process. 
+After the deadline I fixed the requirement.txt so that the vm can be installed without problems. ~~ I apologize, there is a requirements.txt but I made the mistake of adding open3d just in case, before I started the assignement and it made the list really explode. Now I corrected that after the end of the assignment, I hope you don't mind since it has not much to do with the thought process. ~~
 
 # Notes (after deadline):
 - Two things that are really missing from my code is first data augmentation, then validation, and related to that the fact that my keypoint output is not ordered, so I need to find a solution for that. 
