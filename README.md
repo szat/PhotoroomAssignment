@@ -42,4 +42,6 @@ After the deadline I fixed the requirement.txt so that the vm can be installed w
 
 ![6pts_3eyes_3eyes](https://github.com/szat/PhotoroomAssignment/assets/5555551/be1f352e-b01a-4ad9-a306-da696a0b0c8c)
 
-
+- Visual inspection of the case of all 15 points but from 1 channel only, not one-hot encoding, using a mixture of gaussians again.
+  
+![15pts_1channel](https://github.com/szat/PhotoroomAssignment/assets/5555551/0d64b58e-d89b-4da9-9256-8104be860254)
