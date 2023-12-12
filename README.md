@@ -37,3 +37,8 @@ I apologize, there is a requirements.txt but I made the mistake of adding open3d
 
 ![3pts_2eyes_1mouth](https://github.com/szat/PhotoroomAssignment/assets/5555551/dfba58a8-3bc6-45e0-9f17-4616dbeea36c)
 
+- Visual inspection of the case of 6 points that are closer to each other, 3 for each eyes, using mixture of gaussians again. 
+
+![6pts_3eyes_3eyes](https://github.com/szat/PhotoroomAssignment/assets/5555551/be1f352e-b01a-4ad9-a306-da696a0b0c8c)
+
+
