@@ -32,4 +32,4 @@ I apologize, there is a requirements.txt but I made the mistake of adding open3d
 
 # Notes (after deadline):
 - Two things that are really missing from my code is first data augmentation, then validation, and related to that the fact that my keypoint output is not ordered, so I need to find a solution for that. 
-- I am finishing the problem for myself in the file after_time_limit.py, no need to look at it, I just dislike leaving things half done :)
+- I am playing with the problem for myself in the file after_time_limit.py, no need to look at it :)
