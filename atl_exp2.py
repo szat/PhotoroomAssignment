@@ -113,21 +113,10 @@ labels_y_int = labels_y.astype(int)
 label_images = np.zeros([len(normalized_images), 1, 96, 96])
 for i in range(len(label_images)):
     tmp = np.zeros([96, 96])
-    j = 0
-    idx_y = labels_y_int[i][j]
-    idx_x = labels_x_int[i][j]
-    tmp = cv2.circle(tmp, [idx_x, idx_y], 2, 255, -1)
-
-    j = 5
-    idx_y = labels_y_int[i][j]
-    idx_x = labels_x_int[i][j]
-    tmp = cv2.circle(tmp, [idx_x, idx_y], 2, 255, -1)
-
-    j = 10
-    idx_y = labels_y_int[i][j]
-    idx_x = labels_x_int[i][j]
-    tmp = cv2.circle(tmp, [idx_x, idx_y], 2, 255, -1)
-
+    for j in range(6):
+        idx_y = labels_y_int[i][j]
+        idx_x = labels_x_int[i][j]
+        tmp = cv2.circle(tmp, [idx_x, idx_y], 2, 255, -1)
     tmp /= 255.0
     tmp = cv2.GaussianBlur(tmp, (3, 3), 1)
     label_images[i] = tmp
@@ -142,7 +131,7 @@ tmp4 /= 255.0
 tmp4 = cv2.GaussianBlur(tmp4, (3, 3), 1)
 
 
-tmp = label_images[0, 0]
+tmp = label_images[10, 0]
 tmp2 = np.squeeze(normalized_images[0])
 
 tmp3 = np.zeros([96,96,3])
@@ -324,7 +313,7 @@ for i in range(8):
     points = np.vstack([x, y]).T.repeat(scaled_values, axis=0)
 
     # Fit a Gaussian Mixture Model
-    n_components = 3
+    n_components = 6
     gmm = GaussianMixture(n_components=n_components, covariance_type='full')
     gmm.fit(points)
 
@@ -347,7 +336,7 @@ for i in range(8):
     points = np.vstack([x, y]).T.repeat(scaled_values, axis=0)
 
     # Fit a Gaussian Mixture Model
-    n_components = 3
+    n_components = 6
     gmm = GaussianMixture(n_components=n_components, covariance_type='full')
     gmm.fit(points)
 
